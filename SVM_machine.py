@@ -14,6 +14,8 @@ from sklearn import svm
 import sys, Window
 import pickle
 from pathlib import Path
+import detect_face, Window
+import hog_function
 
 # setting paths
 from PyQt5.QtWidgets import QApplication
@@ -41,7 +43,7 @@ for i in range(1,5):
     plt.xlabel(labels[index])
 plt.show()
 
-gray = [cv2.cvtColor(data[i] , cv2.COLOR_BGR2GRAY) for i in range(len(data))]
+gray = [detect_face.face_crop(data[i])for i in range(len(data))]
 
 
 fig = plt.figure(figsize=(10,10))
@@ -55,8 +57,9 @@ plt.show()
 hog_features=[]
 hog_image=[]
 for image in tqdm(gray):
-    fd , hogim = hog(image , orientations=9 , pixels_per_cell=(16,16) , block_norm='L2' , cells_per_block=(4,4) , visualize=True)
-    hog_image.append(hogim)
+    fd = hog_function.get_hog_vector(image)
+    #fd , hogim = hog(image , orientations=9 , pixels_per_cell=(16,16) , block_norm='L2' , cells_per_block=(4,4) , visualize=True)
+    #hog_image.append(hogim)
     hog_features.append(fd)
 
 fig = plt.figure(figsize=(10,10))
