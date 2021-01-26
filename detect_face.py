@@ -8,9 +8,9 @@
 import cv2
 import os
 import numpy as np
-from PIL import Image   
+from PIL import Image
 
-# setting paths 
+
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 eye_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_eye.xml')
 path_write = 'C:/Users/Sebastian/OneDrive - Politechnika Warszawska/Pulpit/EIASR_Project/result'
@@ -73,3 +73,4 @@ cv2.imwrite(os.path.join(path_write, 'Cropped.pgm'), crop_img )
 cv2.imshow("Faces found", gray)
 cv2.imwrite(os.path.join(path_write, 'Marked.pgm'), gray )
 cv2.waitKey(0)
+
