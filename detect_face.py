@@ -58,6 +58,8 @@ def face_crop(image):
         cv2.rectangle(gray, (x, y), (x+w, y+h), (204,0,204), 4)
 
     # cropping image
-    crop_img = gray[y:y+h, x:x+w]
-    return crop_img
-
+    if len(faces) == 1:
+        crop_img = gray[y:y+h, x:x+w]
+        return crop_img
+    else:
+        return gray

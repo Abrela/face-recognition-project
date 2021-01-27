@@ -20,60 +20,45 @@ import hog_function
 # setting paths
 from PyQt5.QtWidgets import QApplication
 
-folderpath = "C:/Users/brela/Desktop/Pw_3_Semester/EIASR/Images/"
-cascade = "C:/Users/brela/opencv/build/etc/haarcascades/haarcascade_frontalface_default.xml"
+folderpath = "D:/ExtendedYaleB/"
 
-height = 156
+height = 256
 width = 128
 data = []
 labels = []
+gray = []
 
 for dirname, _, filenames in tqdm(os.walk(folderpath)):
     for filename in filenames:
-        image = cv2.imread(os.path.join(dirname, filename))
-        image = cv2.resize(image, (width,height))
-        labels.append(dirname.split("/").pop())
-        data.append(image)
+        if filename.endswith('.pgm'):
+            image = cv2.imread(os.path.join(dirname, filename))
+            image = cv2.resize(image, (width, height))
+            labels.append(dirname.split("/").pop())
+            data.append(image)
+            print(filename)
 
+print("wyszło")
 fig = plt.figure(figsize=(10,10))
-for i in range(1,5):
-    index = random.randint(0,2925)
-    plt.subplot(2,2,i)
-    plt.imshow(data[index])
-    plt.xlabel(labels[index])
-plt.show()
+for i in range(len(data)):
+    gray.append(detect_face.face_crop(data[i]))
+    print(i)
 
-gray = [detect_face.face_crop(data[i])for i in range(len(data))]
+#gray = [detect_face.face_crop(data[i])for i in range(len(data))]
 
-
-fig = plt.figure(figsize=(10,10))
-for i in range(1,5):
-    index = random.randint(0,2925)
-    plt.subplot(2,2,i)
-    plt.imshow(gray[index])
-    plt.xlabel(labels[index])
-plt.show()
+print("gray")
 
 hog_features=[]
 hog_image=[]
 for image in tqdm(gray):
-    fd = hog_function.get_hog_vector(image)
-    #fd , hogim = hog(image , orientations=9 , pixels_per_cell=(16,16) , block_norm='L2' , cells_per_block=(4,4) , visualize=True)
-    #hog_image.append(hogim)
+
+    fd , hogim = hog(image , orientations=9 , pixels_per_cell=(16,16) , block_norm='L2' , cells_per_block=(4,4) , visualize=True)
+    hog_image.append(hogim)
     hog_features.append(fd)
 
-fig = plt.figure(figsize=(10,10))
-for i in range(1,5):
-    index = random.randint(0,2925)
-    plt.subplot(2,2,i)
-    plt.imshow(hog_image[index])
-    plt.xlabel(labels[index])
-plt.show()
-
-
+print("fd")
 #Preparing input data to SVM model
 
-Labels = np.array(labels).reshape(len(labels),1) #labels into stack of arrays
+Labels = np.array(labels).reshape(len(labels), 1) #labels into stack of arrays
 hog_features = np.array(hog_features)
 data_frame = np.hstack((hog_features,Labels))
 np.random.shuffle(data_frame)
@@ -96,7 +81,7 @@ y_test_lin = y_test
 y_test_rbf = y_test
 
 #Create SVM model to fit
-
+print("uczy")
 linear_model = svm.SVC(kernel='linear' , class_weight='balanced' , C=10 , gamma='scale')
 rbf_model = svm.SVC(kernel='rbf' , class_weight='balanced' , C=10 , gamma='scale')
 
