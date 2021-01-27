@@ -12,10 +12,10 @@ class Window(QMainWindow):
     def __init__(self):
         super().__init__()
         self.acceptDrops()
-        widget = QWidget()
-        path = glob.glob("C:/Users/pawel/Desktop/yaleB11/*.pgm")
+        #widget = QWidget()
+        #path = glob.glob("C:/Users/pawel/Desktop/yaleB11/*.pgm")
         self.cv_img = []
-        for img in path:
+        for img in images:
             n = cv2.imread(img)
             height, width, channel = n.shape
             bytesPerLine = 3 * width

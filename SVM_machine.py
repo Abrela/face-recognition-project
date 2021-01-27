@@ -5,9 +5,7 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 from tqdm import tqdm
-import random
 from skimage.feature import hog
-from sklearn.svm import SVC
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix, classification_report , accuracy_score
 from sklearn import svm
@@ -15,13 +13,12 @@ import sys, Window
 import pickle
 from pathlib import Path
 import detect_face, Window
-import hog_function
 
 # setting paths
 from PyQt5.QtWidgets import QApplication
 
-folderpath = "D:/ExtendedYaleB/"
-
+#folderpath = "D:/ExtendedYaleB/"
+folderpath = "D:/testowy/"
 height = 256
 width = 128
 data = []
@@ -37,30 +34,26 @@ for dirname, _, filenames in tqdm(os.walk(folderpath)):
             data.append(image)
             print(filename)
 
-print("wyszło")
 fig = plt.figure(figsize=(10,10))
 for i in range(len(data)):
     gray.append(detect_face.face_crop(data[i]))
     print(i)
 
-#gray = [detect_face.face_crop(data[i])for i in range(len(data))]
-
-print("gray")
-
 hog_features=[]
 hog_image=[]
 for image in tqdm(gray):
 
-    fd , hogim = hog(image , orientations=9 , pixels_per_cell=(16,16) , block_norm='L2' , cells_per_block=(4,4) , visualize=True)
+    fd, hogim = hog(image, orientations=9, pixels_per_cell=(16, 16),
+                     block_norm='L2', cells_per_block=(4, 4), visualize=True)
     hog_image.append(hogim)
     hog_features.append(fd)
 
-print("fd")
 #Preparing input data to SVM model
 
 Labels = np.array(labels).reshape(len(labels), 1) #labels into stack of arrays
 hog_features = np.array(hog_features)
-data_frame = np.hstack((hog_features,Labels))
+
+data_frame = np.hstack((hog_features, Labels))
 np.random.shuffle(data_frame)
 
 #x_train, x_test - the training and test part of the first sequence data_frame[:,:-1]
@@ -81,7 +74,7 @@ y_test_lin = y_test
 y_test_rbf = y_test
 
 #Create SVM model to fit
-print("uczy")
+
 linear_model = svm.SVC(kernel='linear' , class_weight='balanced' , C=10 , gamma='scale')
 rbf_model = svm.SVC(kernel='rbf' , class_weight='balanced' , C=10 , gamma='scale')
 

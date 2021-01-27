@@ -16,20 +16,6 @@ def face_crop(image):
     #path_write = 'C:/Users/Sebastian/OneDrive - Politechnika Warszawska/Pulpit/EIASR_Project/result'
     #path_read = 'C:/Users/Sebastian/OneDrive - Politechnika Warszawska/Pulpit/EIASR_Project/try'
 
-    # loading multiply images
-    # def load_images_from_folder(folder):
-    #     images = []
-    #     for filename in os.listdir(folder):
-    #         img = cv2.imread(os.path.join(folder,filename))
-    #         if img is not None:
-    #             images.append(img)
-    #     return images
-
-
-    # reading files and transforming it to grayscale
-    #image = cv2.imread('./test/lfw_funneled/Aaron_Eckhart/Aaron_Eckhart_0001.jpg')
-    #image = cv2.imread('./try/Test.pgm')
-    #image = cv2.imread('./try/abba.png')
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     if gray is None:
         raise Exception("No image")
