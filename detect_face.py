@@ -11,6 +11,7 @@ import numpy as np
 from PIL import Image
 
 def face_crop(image):
+    print("detect")
     face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
     #eye_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_eye.xml')
     #path_write = 'C:/Users/Sebastian/OneDrive - Politechnika Warszawska/Pulpit/EIASR_Project/result'
@@ -41,11 +42,11 @@ def face_crop(image):
 
     # drawing rectangle
     for (x, y, w, h) in faces:
-        cv2.rectangle(gray, (x, y), (x+w, y+h), (204,0,204), 4)
+        cv2.rectangle(gray, (x, y), (x+168, y+192), (204,0,204), 4)
+    print("detect")
 
     # cropping image
-    if len(faces) == 1:
-        crop_img = gray[y:y+h, x:x+w]
-        return crop_img
-    else:
-        return gray
+
+    crop_img = gray[y:y+168, x:x+192]
+    return crop_img
+
