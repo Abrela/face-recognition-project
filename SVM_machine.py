@@ -3,7 +3,6 @@
 import cv2
 import os
 import numpy as np
-import matplotlib.pyplot as plt
 from tqdm import tqdm
 from skimage.feature import hog
 from sklearn.model_selection import train_test_split
@@ -20,9 +19,10 @@ from PyQt5.QtWidgets import QApplication
 
 def learn_and_check():
     #folderpath = "D:/ExtendedYaleB/"
-    folderpath = "D:/CroppedYale/"
-    height = 256
-    width = 128
+    folderpath = "D:/newCY/"
+    #folderpath = "D:/testowy/"
+    height = 512
+    width = 256
     data = []
     labels = []
     gray = []
@@ -31,13 +31,20 @@ def learn_and_check():
             for filename in filenames:
                 if filename.endswith('.pgm'):
                     image = cv2.imread(os.path.join(dirname, filename))
-                    image = cv2.resize(image, (width, height))
-                    labels.append(dirname.split("/").pop())
+                    #image = cv2.resize(image, (width, height))
+                    #detected, picture = detect_face.face_crop(image)
+                    #if detected:
                     data.append(image)
-                    print(filename)
+                    labels.append(dirname.split("/").pop())
 
+
+        print(labels)
+        print(len(data))
+        print(len(labels))
         #for i in range(len(data)):
-        #    gray.append(detect_face.face_crop(data[i]))
+        #    detected, picture = detect_face.face_crop(data[i])
+        #    if detected:
+        #        gray.append(picture)
         #    print(i)
 
         hog_features = []
@@ -47,11 +54,15 @@ def learn_and_check():
             fd, hogim = hog(image, orientations=9, pixels_per_cell=(8, 8),
                             block_norm='L2', cells_per_block=(2, 2), visualize=True)
             hog_image.append(hogim)
+
             hog_features.append(fd)
+
+        #cv2.imshow('HOG', hog_image[0])
+        #print(hog_features[0])
 
         #Preparing input data to SVM model
 
-        Labels = np.array(labels)#.reshape(len(labels), 1) #labels into stack of arrays
+        Labels = np.array(labels).reshape(len(labels), 1) #labels into stack of arrays
         hog_features = np.array(hog_features)
 
         #data_frame = np.hstack((hog_features, Labels))
@@ -63,7 +74,7 @@ def learn_and_check():
         #y_train, y_test - the training and test part of the second sequence data_frame[:,-1]
         x_train, x_test, y_train, y_test = train_test_split(hog_features,
                                                             Labels,
-                                                            test_size=0.3,
+                                                            test_size=0.1,
                                                             random_state=42
                                                             )
 
@@ -81,8 +92,6 @@ def learn_and_check():
         linear_model = svm.SVC(kernel='linear' , class_weight='balanced' , C=10 , gamma='scale')
         rbf_model = svm.SVC(kernel='rbf' , class_weight='balanced' , C=10 , gamma='scale')
 
-
-
         linear_model.fit(x_train_lin, y_train_lin)
         rbf_model.fit(x_train_rbf, y_train_rbf)
         pickle.dump(linear_model, open('linear_model.sav', 'wb'))
@@ -94,15 +103,11 @@ def learn_and_check():
 
 
 def load_picture_to_recognize(path, classifier):
-    print(classifier)
     fd, hogim = hog(path, orientations=9, pixels_per_cell=(8, 8),
                     block_norm='L2', cells_per_block=(2, 2), visualize=True)
 
-    print(fd.size)
-
     fd2 = [fd]
     y_pred = classifier.predict(fd2)
-    print("load")
 
     return y_pred
 #RESULT

@@ -33,20 +33,23 @@ def face_crop(image):
 
     # face cascade
     faces = face_cascade.detectMultiScale(
-        gray,
+        result,
         scaleFactor=1.1,
         minNeighbors=5,
         minSize=(30, 30),
         flags = cv2.CASCADE_SCALE_IMAGE
     )
-
-    # drawing rectangle
-    for (x, y, w, h) in faces:
-        cv2.rectangle(gray, (x, y), (x+168, y+192), (204,0,204), 4)
-    print("detect")
+    if len(faces) > 0:
+        # drawing rectangle
+        for (x, y, w, h) in faces:
+            cv2.rectangle(result, (x, y), (x+168, y+192), (204,0,204), 4)
+            print("detect")
 
     # cropping image
 
-    crop_img = gray[y:y+168, x:x+192]
-    return crop_img
+        crop_img = result[y:y+192, x:x+168]
+        return True, crop_img
+
+    else:
+        return False, gray
 

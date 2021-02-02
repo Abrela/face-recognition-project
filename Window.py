@@ -9,6 +9,7 @@ import glob
 from PyQt5.QtWidgets import QApplication, QLabel, QWidget, QVBoxLayout, QPushButton
 from SVM_machine import learn_and_check, load_picture_to_recognize
 import detect_face
+import numpy as np
 
 class Window(QDialog):
     def __init__(self):
@@ -45,6 +46,9 @@ class Window(QDialog):
         image_box.addWidget(self.label)
         self.path_button.clicked.connect(self.getImage)
         self.setLayout(image_box)
+        self.face_name = QLabel("Podpis")
+        image_box.addWidget(self.face_name)
+        self.face_name.move(600,600)
         self.show()
 
     def getImage(self):
@@ -54,10 +58,11 @@ class Window(QDialog):
         self.label.setPixmap(QPixmap(pixmap))
         self.resize(pixmap.width(), pixmap.height())
         img = cv2.imread(img)
-        ans = detect_face.face_crop(img)
-        ans = load_picture_to_recognize(img, self.classifierLin)
+        #ans = detect_face.face_crop(img)
+        ret = load_picture_to_recognize(img, self.classifierLin)
         print("load")
-        print(ans)
+        self.face_name.setText(np.array_str(ret))
+        print(ret)
 
     def button1_clicked(self):
         self.i = self.i + 1
